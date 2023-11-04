@@ -42,3 +42,6 @@ VALUES
     (1, 'B001', 'Товар 3', 8, 4),
     (2, 'B002', 'Товар 4', 12, 4);*/
 
+/*select * from DETAILS;
+
+select * from ORDERS*/

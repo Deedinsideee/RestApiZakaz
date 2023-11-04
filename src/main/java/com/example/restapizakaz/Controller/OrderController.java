@@ -42,15 +42,12 @@ public class OrderController {
     @RequestMapping(value = "/changeOne", method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Order> changeOne (@RequestBody String json)
     {
-        System.out.println(json);
         ObjectMapper objectMapper = new ObjectMapper();
-
         try {
             OrderDTO orderDTO = objectMapper.readValue(json, OrderDTO.class);
             orderService.update(orderDTO);
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("poluchilos govno");
         }
         return ResponseEntity.status(HttpStatus.OK).body(new Order());
 

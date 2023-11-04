@@ -28,7 +28,6 @@ public class OrderService {
     public List<OrderDTO> getAllOrders()
     {
         List<OrderDTO> orders =maptoOrderDTO( orderRepostitory.findAll());
-        Map<Order, List<Details>> orderDetailsMap = new LinkedHashMap<>();
         for (OrderDTO order : orders) {
             List<DetailsDTO> details = maptoDetailDto(detailsRepository.findDetailsByOrder_id(order.getId()));
             details.sort(Comparator.comparingLong(DetailsDTO::getId));
