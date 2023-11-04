@@ -8,10 +8,7 @@ import com.example.restapizakaz.repository.DetailsRepository;
 import com.example.restapizakaz.repository.OrderRepostitory;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -34,9 +31,11 @@ public class OrderService {
         Map<Order, List<Details>> orderDetailsMap = new LinkedHashMap<>();
         for (OrderDTO order : orders) {
             List<DetailsDTO> details = maptoDetailDto(detailsRepository.findDetailsByOrder_id(order.getId()));
+            details.sort(Comparator.comparingLong(DetailsDTO::getId));
             order.setDetails(details);
-        }
 
+        }
+        orders.sort(Comparator.comparingInt(OrderDTO::getId));
         return orders;
     }
 
@@ -66,6 +65,38 @@ public class OrderService {
             })
             .collect(Collectors.toList());
     }
+    public void update(OrderDTO orderDto)
+    {
+       maptoOrder(orderDto);
+    }
+    private void maptoOrder(OrderDTO orderDto) {
+        Optional<Order> orders = orderRepostitory.findById(Long.valueOf(orderDto.getId()));
+        if (orders.isPresent()) {
+            Order order = orders.get();
+            order.setCustomerName(orderDto.getCustomerName());
+            order.setCustomerAddress(orderDto.getCustomerAddress());
+            order.setDateOfCreation(orderDto.getDateOfCreation());
+            order.setTotalCost(orderDto.getTotalCost());
+            maptoDetails(orderDto.getDetails(), order);
+            orderRepostitory.save(order);
+        }
+    }
 
+    private void maptoDetails(List<DetailsDTO> details,Order order) {
+        details.forEach(s->
+        {
+            Details detail = detailsRepository.findDetailsByOrder_idAndId(order.getId(),s.getId());
+            detail.setOrder(order);
+            detail.setId(s.getId());
+            detail.setSerialNumber(s.getSerialNumber());
+            detail.setProductName(s.getProductName());
+            detail.setAmount(s.getAmount());
+            detailsRepository.save(detail);
+
+
+
+        }
+        );
+    }
 
 }

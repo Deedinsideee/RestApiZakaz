@@ -15,4 +15,6 @@ import java.util.List;
 public interface DetailsRepository extends JpaRepository<Details,Long> {
     public List<Details> findDetailsByOrder_id(int order_id);
 
+    public Details findDetailsByOrder_idAndId(int order_id,Long id);
+
 }

@@ -30,7 +30,15 @@ VALUES
     (1, 'B001', 'Товар 3', 8, 2),
     (2, 'B002', 'Товар 4', 12, 2);
 
+/*INSERT INTO public.ORDERS (id, customer_name, customer_adress, total_cost, date_of_creation)
+VALUES
+    (3, 'Иванова', 'Улица Пушкина12312321, 123', 1005234, '2023-11-01'),
+    (4, 'Петрова', 'Улица Лермонтова312321312, 456', 155340, '2023-11-02');
 
-
-
+INSERT INTO public.DETAILS (id, serial_number, product_name, amount, order_id)
+VALUES
+    (1, 'A001', 'Товар 1', 10, 3),
+    (2, 'A002', 'Товар 2', 5, 3),
+    (1, 'B001', 'Товар 3', 8, 4),
+    (2, 'B002', 'Товар 4', 12, 4);*/
 
