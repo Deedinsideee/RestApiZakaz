@@ -52,4 +52,20 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.OK).body(new Order());
 
     }
+
+    @Operation(description = "Удалить заказ", method = "deleteOrder")
+    @RequestMapping(value = "/deleteOrder", method = RequestMethod.DELETE,produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Order> deleteOrder (@RequestBody String json)
+    {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            OrderDTO orderDTO = objectMapper.readValue(json, OrderDTO.class);
+            orderService.delete(orderDTO);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(new Order());
+
+    }
+
 }

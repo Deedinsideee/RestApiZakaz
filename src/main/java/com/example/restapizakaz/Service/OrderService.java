@@ -38,6 +38,63 @@ public class OrderService {
         return orders;
     }
 
+
+    public void update(OrderDTO orderDto)
+    {
+        Order order = maptoOrder(orderDto);
+        List<Details> details = maptoDetails(orderDto.getDetails(),order);
+        orderRepostitory.save(order);
+        detailsRepository.saveAll(details);
+
+    }
+
+    public void delete(OrderDTO orderDto)
+    {
+        Order order = maptoOrder(orderDto);
+        List<Details> details = maptoDetails(orderDto.getDetails(),order);
+        orderRepostitory.delete(order);
+        detailsRepository.deleteAll(details);
+
+    }
+
+
+
+
+
+
+
+    private Order maptoOrder(OrderDTO orderDto) {
+        Optional<Order> orders = orderRepostitory.findById(Long.valueOf(orderDto.getId()));
+        Order order = new Order();
+        if (orders.isPresent()) {
+            order = orders.get();
+            order.setCustomerName(orderDto.getCustomerName());
+            order.setCustomerAddress(orderDto.getCustomerAddress());
+            order.setDateOfCreation(orderDto.getDateOfCreation());
+            order.setTotalCost(orderDto.getTotalCost());
+            maptoDetails(orderDto.getDetails(), order);
+        }
+        return order;
+    }
+
+    private List<Details> maptoDetails(List<DetailsDTO> details,Order order) {
+        List<Details> detailsList = new ArrayList<>();
+        details.forEach(s->
+        {
+            Details detail = detailsRepository.findDetailsByOrder_idAndId(order.getId(),s.getId());
+            detail.setOrder(order);
+            detail.setId(s.getId());
+            detail.setSerialNumber(s.getSerialNumber());
+            detail.setProductName(s.getProductName());
+            detail.setAmount(s.getAmount());
+            detailsList.add(detail);
+
+
+
+        }
+        );
+        return detailsList;
+    }
     private List<OrderDTO> maptoOrderDTO(List<Order> orders) {
         return orders.stream()
             .map(order -> {
@@ -64,38 +121,4 @@ public class OrderService {
             })
             .collect(Collectors.toList());
     }
-    public void update(OrderDTO orderDto)
-    {
-       maptoOrder(orderDto);
-    }
-    private void maptoOrder(OrderDTO orderDto) {
-        Optional<Order> orders = orderRepostitory.findById(Long.valueOf(orderDto.getId()));
-        if (orders.isPresent()) {
-            Order order = orders.get();
-            order.setCustomerName(orderDto.getCustomerName());
-            order.setCustomerAddress(orderDto.getCustomerAddress());
-            order.setDateOfCreation(orderDto.getDateOfCreation());
-            order.setTotalCost(orderDto.getTotalCost());
-            maptoDetails(orderDto.getDetails(), order);
-            orderRepostitory.save(order);
-        }
-    }
-
-    private void maptoDetails(List<DetailsDTO> details,Order order) {
-        details.forEach(s->
-        {
-            Details detail = detailsRepository.findDetailsByOrder_idAndId(order.getId(),s.getId());
-            detail.setOrder(order);
-            detail.setId(s.getId());
-            detail.setSerialNumber(s.getSerialNumber());
-            detail.setProductName(s.getProductName());
-            detail.setAmount(s.getAmount());
-            detailsRepository.save(detail);
-
-
-
-        }
-        );
-    }
-
 }
